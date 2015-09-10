@@ -37,7 +37,7 @@ class Controller{
         }
     }
 
-    function createAccount($session_id, $name, $address, $location, $phone, $email, $how, $password, $source, $url){
+    function createAccount($session_id, $name, $address, $location, $phone, $email, $how, $password, $source){
         //create account -------------------------------------
         $set_entry_parameters = array(
 
