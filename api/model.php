@@ -46,6 +46,7 @@ class Model
 
         curl_setopt($curl_request, CURLOPT_POSTFIELDS, $post);
         $result = curl_exec($curl_request);
+
         curl_close($curl_request);
 
         $result = explode("\r\n\r\n", $result, 2);

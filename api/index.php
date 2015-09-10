@@ -4,25 +4,32 @@ require 'controller.php';
 
 $controller = new Controller();
 
-if(isset($_REQUEST['intent']) && in_array($_REQUEST['intent'], INTENTS) && isset($_REQUEST['application_name']) && in_array($_REQUEST['application_name'], APPS))
-{    
+$intents = array("login", "create_account", "upgrade_account", "search4Account", "logout");
+$apps = array("application_portal", "website_registration");
+$upgrades = array("paid");
+
+if((isset($_REQUEST['intent'])) &&
+    (in_array($_REQUEST['intent'], $intents)) &&
+    (isset($_REQUEST['application_name'])) &&
+    (in_array($_REQUEST['application_name'], $apps)))
+{
     $intent = $_REQUEST['intent'];
     $source = $_REQUEST['application_name'];
-   
+
     switch ($intent) {
         case "login":
-            if(!empty($REQUEST['username']) && !empty($_REQUEST['password'])){
-                $name = $_REQUEST['username'];
+            if((isset($_REQUEST['username'])) && (isset($_REQUEST['password']))){
+                $username = $_REQUEST['username'];
                 $password = $_REQUEST['password'];
 
-                $result = $controller->login($username, $password);  
+                $result = $controller->login($username, $password, $source);
                 echo $result;
             }else{
                 return_error();
-            }            
-        break;
+            }
+            break;
         case "create_account":
-            if(!empty($REQUEST['sessionid']) && !empty($_REQUEST['email'])){
+            if(isset($_REQUEST['sessionid']) && isset($_REQUEST['email'])){
                 $session_id = $_REQUEST['sessionid'];
                 $email = $_REQUEST['email'];
                 $name = $_REQUEST['name']?$_REQUEST['name']:"";
@@ -30,51 +37,55 @@ if(isset($_REQUEST['intent']) && in_array($_REQUEST['intent'], INTENTS) && isset
                 $address = $_REQUEST['address']?$_REQUEST['address']:"";
                 $location = $_REQUEST['location']?$_REQUEST['location']:"";
                 $how = $_REQUEST['how']?$_REQUEST['how']:"";
-                
+
                 $result = $controller->createAccount($session_id, $name, $address, $location, $phone, $email, $how, $source);
                 echo $result;
             }else{
                 return_error();
-            }   
-        break;
+            }
+            break;
         case "upgrade_account":
-            if(!empty($REQUEST['sessionid']) && !empty($_REQUEST['accountid'])){
+            if(isset($_REQUEST['sessionid']) && isset($_REQUEST['accountid']) && isset($_REQUEST['upgrade'])){
                 $session_id = $_REQUEST['sessionid'];
-                $accountid = $_REQUEST['accountid'];
-                $upgrade = $_REQUEST['uprade']?$_REQUEST['upgrade']:"";
-                
-                $result = $controller->updateAccount($session_id, $accountid);  
-                echo $result;
+                $account_id = $_REQUEST['accountid'];
+                $upgrade = $_REQUEST['upgrade'];
+                if(in_array($upgrade, $upgrades)) {
+                    $result = $controller->upgradeAccount($session_id, $account_id);
+                    echo $result;
+                }
+                else{
+                    return_error();
+                }
             }else{
                 return_error();
-            }   
-        break;        
+            }
+            break;
         case "logout":
-            if(!empty($REQUEST['sessionid'])){
+            if(isset($_REQUEST['sessionid'])){
                 $session_id = $_REQUEST['sessionid'];
-                               
-                $result = $controller->logout($session_id, $source);  
+
+                $result = $controller->logout($session_id);
                 echo $result;
             }else{
                 return_error();
-            }   
-        break;
+            }
+            break;
         default:
-            return_error();            
-        break;
-    }    
+            return_error();
+            break;
+    }
 }
 else{
-        echo json_encode(array(
-                    "status" => 0,
-                    'message' => "Error: Invalid Application or Intent"
-             ));        
+    echo json_encode(array(
+        "status" => 0,
+        'message' => "Error: Invalid Application or Intent"
+    ));
 }
-       
+
 function return_error(){
     echo json_encode(array(
-                    "status" => 0,
-                    'message' => "Incomplete/Incorrect Parameters"
-             ));   
+        "status" => 0,
+        'message' => "Incomplete or Incorrect Parameters"
+    ));
     exit();
 }

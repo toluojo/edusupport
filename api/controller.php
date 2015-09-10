@@ -9,20 +9,20 @@ require 'model.php';
 require 'constants.php';
 
 class Controller{
-    function login($username, $password){
+    function login($username, $password, $source){
         $parameters = array(
             "user_auth" => array(
                 "user_name" => $username,
                 "password" => md5($password),
                 "version" => "1"
             ),
-            "application_name" => "RestTest",
+            "application_name" => $source,
             "name_value_list" => array(),
         );
         $model = new Model(LOGIN, $parameters);
         $login_result = $model->call();
 
-        if($login_result){
+        if(isset($login_result->id)){
             return json_encode(array(
                 "status" => 1,
                 'sessionid' => $login_result->id,
@@ -37,46 +37,55 @@ class Controller{
         }
     }
 
-    function createAccount($session_id, $name, $address, $location, $phone, $email, $how, $password, $source){
-        //create account -------------------------------------
-        $set_entry_parameters = array(
+    function createAccount($session_id, $name, $address, $location, $phone, $email, $how, $source){
+        $exists = $this->searchAccount($session_id, $email);
 
-            //session id
-            "session" => $session_id,
-
-            //The name of the module from which to retrieve records.
-            "module_name" => "Accounts",
-
-            //Record attributes
-            "name_value_list" => array(
-                //to update a record, you will need to pass in a record id as commented below
-                //        array("name" => "id", "value" => "eb220d1d-8684-82f1-4d94-55e597c27a1c"),
-                array("name" => "name", "value" => $name),
-                array("name" => "jjwg_maps_address_c", "value" => $address),
-                array("name" => "billing_address_state", "value" => $location),
-                array("name" => "phone_office", "value" => $phone),
-                array("name" => "email1", "value" => $email),
-                array("name" => "source_c", "value" => $source),
-                array("name" => "how_c", "value" => $how),
-                array("name" => "password_c", "value" => $password),
-            ),
-        );
-
-        $model = new Model(SET_ENTRY, $set_entry_parameters);
-        $set_entry_result = $model->call();
-
-        if($set_entry_result){
-            return json_encode(array(
-                "status" => 1,
-                'accountid' => $set_entry_result->id,
-                'message' => "Lead successfully created"
-            ));
-        }
-        else{
+        if($exists){
             return json_encode(array(
                 "status" => 0,
-                'message' => "Account Creation Unsuccessful"
+                'message' => "Account Already Exists"
             ));
+        }
+        else {
+            //create account -------------------------------------
+            $set_entry_parameters = array(
+
+                //session id
+                "session" => $session_id,
+
+                //The name of the module from which to retrieve records.
+                "module_name" => "Accounts",
+
+                //Record attributes
+                "name_value_list" => array(
+                    //to update a record, you will need to pass in a record id as commented below
+                    //        array("name" => "id", "value" => "eb220d1d-8684-82f1-4d94-55e597c27a1c"),
+                    array("name" => "name", "value" => $name),
+                    array("name" => "jjwg_maps_address_c", "value" => $address),
+                    array("name" => "billing_address_state", "value" => $location),
+                    array("name" => "phone_office", "value" => $phone),
+                    array("name" => "email1", "value" => $email),
+                    array("name" => "source_c", "value" => $source),
+                    array("name" => "how_c", "value" => $how),
+//                array("name" => "password_c", "value" => $password),
+                )
+            );
+
+            $model = new Model(SET_ENTRY, $set_entry_parameters);
+            $set_entry_result = $model->call();
+
+            if (isset($login_result->id)) {
+                return json_encode(array(
+                    "status" => 1,
+                    'accountid' => $set_entry_result->id,
+                    'message' => "Lead successfully created"
+                ));
+            } else {
+                return json_encode(array(
+                    "status" => 0,
+                    'message' => "Account Creation Unsuccessful"
+                ));
+            }
         }
     }
 
@@ -105,7 +114,7 @@ class Controller{
         $model = new Model(SET_ENTRY, $set_entry_parameters);
         $set_entry_result = $model->call();
 
-        if($set_entry_result){
+        if(isset($set_entry_result->id)){
             return json_encode(array(
                 "status" => 1,
                 'message' => "Lead changed to customer"
@@ -182,20 +191,12 @@ class Controller{
             "session" => $session_id,
         );
         $model = new Model(LOGOUT, $parameters);
-        $login_result = $model->call();
+        $model->call();
 
-        if($login_result){
-            return json_encode(array(
-                "status" => 1,
-                'message' => "Logout successful"
-            ));
-        }
-        else{
-            return json_encode(array(
-                "status" => 0,
-                'message' => "Logout unsuccessful"
-            ));
-        }
+        return json_encode(array(
+            "status" => 1,
+            'message' => "Logout successful"
+        ));
     }
 
 }
