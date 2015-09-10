@@ -165,8 +165,8 @@ class Controller{
             'favorites' => false
         );
 
-        $model = new Model();
-        $search_by_module_result = call(SEARCH_BY_MODULE, $search_by_module_parameters);
+        $model = new Model(SEARCH_BY_MODULE, $search_by_module_parameters);
+        $search_by_module_result = $model->call();
 
         if(empty($search_by_module_result->entry_list[0]->records)){
             return false;

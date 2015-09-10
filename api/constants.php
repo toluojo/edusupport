@@ -7,7 +7,7 @@
  */
 
 define("LOGIN", "login");
-define("LOGIN", "logout");
+define("LOGOUT", "logout");
 define("SET_ENTRY", "set_entry");
 define('SEARCH_BY_MODULE', "search_by_module");
 define("URL", "http://localhost/suite/service/v4_1/rest.php");
