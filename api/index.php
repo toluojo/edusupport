@@ -1,14 +1,52 @@
 <?php
 
-$url = "http://localhost/vgg/suite/service/v4_1/rest.php";
-$username = "caleb";
-$password = "password";
-$intents = array("apply_portal_registration", "website_registration", "sis_payment");
+require 'controller.php';
+
+$controller = new controller();
+
+$intents = array("login", "create_account", "update_account", "search4Account", "logout");
 
 if(isset($_REQUEST['intent'])){
-    $intent = $_REQUEST['intent'];
-
     if(in_array($intent, $intents)){
+        $intent = $_REQUEST['intent'];
+    }
+
+    switch ($intent) {
+    case "login":
+        if(!empty($REQUEST['name']) && !empty($_REQUEST['password'])){
+            $name = $_REQUEST['name'];
+            $password = $_REQUEST['password'];
+
+            $result = $controller->login($username, $password);        
+        }else{
+            $error
+        }            
+    break;
+    case "create_account":
+        
+
+
+    break;
+    case "update_account":
+        
+
+
+    break;
+    case "search4Account":
+        
+
+
+        break;
+    case "logout":
+        
+
+
+        break;
+    default:
+        break;
+}
+    
+        
         $name = $_REQUEST['name'];
         $phone = $_REQUEST['phone'];
         $email = $_REQUEST['email'];
@@ -88,78 +126,10 @@ function returnError(){
     ));
 }
 
-function createAccount($session_id, $name, $address, $location, $phone, $email, $how, $password, $source, $url){
-    //create account -------------------------------------
-    $set_entry_parameters = array(
 
-        //session id
-        "session" => $session_id,
 
-        //The name of the module from which to retrieve records.
-        "module_name" => "Accounts",
 
-        //Record attributes
-        "name_value_list" => array(
-            //to update a record, you will need to pass in a record id as commented below
-            //        array("name" => "id", "value" => "eb220d1d-8684-82f1-4d94-55e597c27a1c"),
-            array("name" => "name", "value" => $name),
-            array("name" => "jjwg_maps_address_c", "value" => $address),
-            array("name" => "billing_address_state", "value" => $location),
-            array("name" => "phone_office", "value" => $phone),
-            array("name" => "email1", "value" => $email),
-            array("name" => "source_c", "value" => $source),
-            array("name" => "how_c", "value" => $how),
-            array("name" => "password_c", "value" => $password),
-        ),
-    );
-
-    $set_entry_result = call("set_entry", $set_entry_parameters, $url);
-
-    if($set_entry_result){
-        echo json_encode(array(
-            "status" => 1,
-            'accountid' => $set_entry_result->id,
-            'message' => "Lead successfully created"
-        ));
-    }
-    //echo "<pre>";
-//    echo json_encode(array("status" => 1, "data" => $set_entry_result));
-    //echo "</pre>";
-}
-
-function upgradeAccount($session_id, $id, $url){
-    //update account -------------------------------------
-    $set_entry_parameters = array(
-
-        //session id
-        "session" => $session_id,
-
-        //The name of the module from which to retrieve records.
-        "module_name" => "Accounts",
-
-        //Record attributes
-        "name_value_list" => array(
-            //to update a record, you will need to pass in a record id as commented below
-            array("name" => "id", "value" => $id),
-            array("name" => "account_type", "value" => "Customer")
-        )
-    );
-
-    $set_entry_result = call("set_entry", $set_entry_parameters, $url);
-
-    if($set_entry_result){
-//        die(var_dump($set_entry_result));
-        echo json_encode(array(
-            "status" => 1,
-            'accountid' => $set_entry_result->id,
-            'message' => "Lead changed to customer"
-        ));
-    }
-    //echo "<pre>";
-//    echo json_encode(array("status" => 1, "data" => $set_entry_result));
-    //echo "</pre>";
-}
-
+function upgradeAccount($session_id, $id, $url)
 
 
 

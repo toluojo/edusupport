@@ -9,8 +9,7 @@ require 'model.php';
 require 'constants.php';
 
 class controller
-{
-    
+{    
     function login($username, $password){
         $login_parameters = array(
                                     "user_auth" => array(
@@ -33,7 +32,7 @@ class controller
 
     }
     
-    function create_account(){
+    function create_account($session_id, $name, $address, $location, $phone, $email, $how, $password, $source){
         $set_entry_parameters = array(
                                         //session id
                                         "session" => $session_id,
@@ -44,23 +43,27 @@ class controller
                                         //Record attributes
                                         "name_value_list" => array(
                                             //to update a record, you will need to pass in a record id as commented below
-                                        //  array("name" => "id", "value" => "eb220d1d-8684-82f1-4d94-55e597c27a1c"),
-                                            array("name" => "name", "value" => "New Test Account"),
-                                            array("name" => "matric_number_c", "value" => "1234567890"),
-                                            array("name" => "jjwg_maps_address_c", "value" => "8, watch tower street, Onipanu Lagos"),
-                                            array("name" => "billing_address_state", "value" => "Anambra"),
-                                            array("name" => "phone_office", "value" => "1234567890"),
-                                            array("name" => "email1", "value" => "test@cloudtechng.com"),
-                                            array("name" => "description", "value" => "Heard from us through website"),
-                                            array("name" => "password_c", "value" => "Password"),
+                                            array("name" => "name", "value" => $name),
+                                            array("name" => "jjwg_maps_address_c", "value" => $address),
+                                            array("name" => "billing_address_state", "value" => $location),
+                                            array("name" => "phone_office", "value" => $phone),
+                                            array("name" => "email1", "value" => $email),
+                                            array("name" => "source_c", "value" => $source),
+                                            array("name" => "how_c", "value" => $how),
+                                            array("name" => "password_c", "value" => $password),
                                             ),
                                       );
 
         $set_entry_result = call("set_entry", $set_entry_parameters, $url);
-
-        //echo "<pre>";
-        echo json_encode($set_entry_result);
-        //echo "</pre>";
+         
+        if($set_entry_result){
+            echo json_encode(array(
+                "status" => 1,
+                'accountid' => $set_entry_result->id,
+                'message' => "Lead successfully created"
+            ));
+        }
+       
     }
     
     function update_account(){
