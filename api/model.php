@@ -20,7 +20,6 @@ class Model
     function __construct($method, $parameters) {
         $this->method = $method;
         $this->parameters = $parameters;
-        $this->url = $url;
     }
     
     function call()
