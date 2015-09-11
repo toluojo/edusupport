@@ -67,14 +67,14 @@ class Controller{
                     array("name" => "email1", "value" => $email),
                     array("name" => "source_c", "value" => $source),
                     array("name" => "how_c", "value" => $how),
-//                array("name" => "password_c", "value" => $password),
+                    array("name" => "account_type", "value" => LEAD),
                 )
             );
 
             $model = new Model(SET_ENTRY, $set_entry_parameters);
             $set_entry_result = $model->call();
 
-            if (isset($login_result->id)) {
+            if (isset($set_entry_result->id)) {
                 return json_encode(array(
                     "status" => 1,
                     'accountid' => $set_entry_result->id,
