@@ -16,6 +16,15 @@ if((isset($_REQUEST['intent'])) &&
     $intent = $_REQUEST['intent'];
     $source = $_REQUEST['application_name'];
 
+    switch($source){
+        case $apps[0]:
+            $source = "Apply Portal";
+            break;
+        case $apps[1]:
+            $source = "Web Site";
+            break;
+    }
+
     switch ($intent) {
         case "login":
             if((isset($_REQUEST['username'])) && (isset($_REQUEST['password']))){
