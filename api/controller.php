@@ -8,7 +8,7 @@
 require 'model.php';
 require 'constants.php';
 
-class Controller{
+class controller{
     function login($username, $password, $source){
         $parameters = array(
             "user_auth" => array(
@@ -89,8 +89,102 @@ class Controller{
         }
     }
 
-    function updateAccount(){
+    function fetchAllAccounts($session_id){
+        $get_entry_list_parameters = array(
+            //session id
+            'session' => $session_id,
 
+            //The name of the module from which to retrieve records
+            'module_name' => 'Accounts',
+
+            //The SQL WHERE clause without the word "where".
+            'query' => "accounts.account_type IS NULL",
+
+            //The SQL ORDER BY clause without the phrase "order by".
+            'order_by' => "",
+
+            //The record offset from which to start.
+            'offset' => '0',
+
+            //Optional. A list of fields to include in the results.
+            'select_fields' => array(
+                'id',
+                'name',
+//                'billing_address_street',
+//                'billing_address_city',
+//                'billing_address_postalcode',
+//                'billing_address_country',
+//                'shipping_address_street',
+//                'shipping_address_city',
+//                'shipping_address_postalcode',
+//                'shipping_address_country',
+//                'website',
+//                'deleted',
+            ),
+
+            /*
+            A list of link names and the fields to be returned for each link name.
+            Example: 'link_name_to_fields_array' => array(array('name' => 'email_addresses', 'value' => array('id', 'email_address', 'opt_out', 'primary_address')))
+            */
+            'link_name_to_fields_array' => array(
+            ),
+
+            //The maximum number of results to return.
+            'max_results' => '',
+
+            //To exclude deleted records
+            //'deleted' => false,
+
+            //If only records marked as favorites should be returned.
+            //'Favorites' => false,
+        );
+
+        $model = new Model(GET_ENTRY_LIST, $get_entry_list_parameters);
+        $accounts = $model->call();
+
+//        die(var_dump($accounts));
+
+        return $accounts;
+    }
+
+    function reviveAllAccounts($session_id){
+        $accounts = $this->fetchAllAccounts($session_id);
+
+        while($accounts->total_count > 0){
+            foreach($accounts->entry_list as $account){
+                $this->updateAccount($session_id, $account->id);
+            }
+            $accounts = $this->fetchAllAccounts($session_id);
+        }
+
+        return true;
+    }
+
+    function updateAccount($session_id, $account_id){
+        $set_entry_parameters = array(
+
+            //session id
+            "session" => $session_id,
+
+            //The name of the module from which to retrieve records.
+            "module_name" => "Accounts",
+
+            //Record attributes
+            "name_value_list" => array(
+                //to update a record, you will need to pass in a record id as commented below
+                array("name" => "id", "value" => $account_id),
+                array("name" => "account_type", "value" => LEAD),
+            )
+        );
+
+        $model = new Model(SET_ENTRY, $set_entry_parameters);
+        $set_entry_result = $model->call();
+
+        if (isset($set_entry_result->id)) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     function upgradeAccount($session_id, $account_id){

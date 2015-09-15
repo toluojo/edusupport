@@ -1,11 +1,12 @@
 <?php
 
 require 'controller.php';
+require 'constants.php';
 
-$controller = new Controller();
+$controller = new controller();
 
-$intents = array("login", "create_account", "upgrade_account", "search4Account", "logout");
-$apps = array("application_portal", "website_registration");
+$intents = array(LOGIN, "create_account", "upgrade_account", "search4Account", "revive_accounts", LOGOUT);
+$apps = array("application_portal", "website_registration", "sudo");
 $upgrades = array("paid");
 
 if((isset($_REQUEST['intent'])) &&
@@ -69,6 +70,16 @@ if((isset($_REQUEST['intent'])) &&
                 return_error();
             }
             break;
+//        case "revive_accounts":
+//            if(isset($_REQUEST['sessionid'])){
+//                $session_id = $_REQUEST['sessionid'];
+//
+//                $result = $controller->reviveAllAccounts($session_id);
+//                echo $result;
+//            }else{
+//                return_error();
+//            }
+//            break;
         case "logout":
             if(isset($_REQUEST['sessionid'])){
                 $session_id = $_REQUEST['sessionid'];
