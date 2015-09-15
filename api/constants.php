@@ -11,4 +11,4 @@ define("LOGOUT", "logout");
 define("SET_ENTRY", "set_entry");
 define('SEARCH_BY_MODULE', "search_by_module");
 define('LEAD', "Lead");
-define("URL", "http://localhost/vgg/suite/service/v4_1/rest.php");
+define("URL", "http://localhost/suite/service/v4_1/rest.php");

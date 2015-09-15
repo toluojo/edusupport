@@ -16,6 +16,15 @@ if((isset($_REQUEST['intent'])) &&
     $intent = $_REQUEST['intent'];
     $source = $_REQUEST['application_name'];
 
+    switch($source){
+        case $apps[0]:
+            $source = "Apply Portal";
+            break;
+        case $apps[1]:
+            $source = "Web Site";
+            break;
+    }
+
     switch ($intent) {
         case "login":
             if((isset($_REQUEST['username'])) && (isset($_REQUEST['password']))){
@@ -75,6 +84,35 @@ if((isset($_REQUEST['intent'])) &&
             break;
     }
 }
+elseif(isset($_REQUEST['page_url']) && ($_REQUEST['page_url'] == ""))
+{   
+    if (get_magic_quotes_gpc()) {
+        $unescaped_REQUEST_data = stripslashes_deep($_REQUEST);
+      } else {
+        $unescaped_REQUEST_data = $_REQUEST;
+      }
+      $form_data = json_decode($unescaped_REQUEST_data['data_json']);
+      // If your form data has an 'Email Address' field, here's how you extract it:     
+      $email_address = $form_data->email_address[0];
+      $name = $_REQUEST['first_name'];
+      $name .= " ".$_REQUEST['last_name'];
+      $phone = $_REQUEST['phone'];
+      $how = $_REQUEST['how'];
+      
+      // Grab the remaining page data...                                                
+      $page_id = $_REQUEST['page_id'];
+      $page_url = $_REQUEST['page_url'];
+      $variant = $_REQUEST['variant'];
+      
+      //set relevant details
+      $source = "website_registration";
+      $loginresult = $controller->login("tolu.ojo", "password", $source);
+      $lr = json_decode($loginresult);
+      $session_id = $lr->sessionid;      
+      
+      $result = $controller->createAccount($session_id, $name, $phone, $email, $how, $source);
+      echo $result;
+}
 else{
     echo json_encode(array(
         "status" => 0,
@@ -88,4 +126,11 @@ function return_error(){
         'message' => "Incomplete or Incorrect Parameters"
     ));
     exit();
+}
+
+function stripslashes_deep($value) {
+    $value = is_array($value) ?
+    array_map('stripslashes_deep', $value) :
+    stripslashes($value);
+    return $value;
 }

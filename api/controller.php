@@ -29,7 +29,7 @@ class Controller{
                 'message' => "Login successful"
             ));
         }
-        else{
+        else{            
             return json_encode(array(
                 "status" => 0,
                 'message' => "Login unsuccessful"
@@ -80,7 +80,7 @@ class Controller{
                     'accountid' => $set_entry_result->id,
                     'message' => "Lead successfully created"
                 ));
-            } else {
+            } else {                
                 return json_encode(array(
                     "status" => 0,
                     'message' => "Account Creation Unsuccessful"
