@@ -201,7 +201,7 @@ class controller{
             "name_value_list" => array(
                 //to update a record, you will need to pass in a record id as commented below
                 array("name" => "id", "value" => $account_id),
-                array("name" => "account_type", "value" => "Customer")
+                array("name" => "account_type", "value" => "applicant")
             )
         );
 

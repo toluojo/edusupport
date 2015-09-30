@@ -9,20 +9,18 @@ $intents = array(LOGIN, "create_account", "upgrade_account", "search4Account", "
 $apps = array("application_portal", "website_registration", "sudo");
 $upgrades = array("paid");
 
-if((isset($_REQUEST['intent'])) &&
-    (in_array($_REQUEST['intent'], $intents)) &&
-    (isset($_REQUEST['application_name'])) &&
-    (in_array($_REQUEST['application_name'], $apps)))
-{
-    $intent = $_REQUEST['intent'];
-    $source = $_REQUEST['application_name'];
+$intent = isset($_REQUEST['intent'])?strtolower($_REQUEST['intent']):"";
+$source = isset($_REQUEST['application_name'])?strtolower($_REQUEST['application_name']):"";
 
+if((isset($intent)) && (in_array($intent, $intents)) &&
+    (isset($source) && (in_array($source, $apps))))
+{     
     switch($source){
         case $apps[0]:
-            $source = "Apply Portal";
+            $source = "apply_portal";
             break;
         case $apps[1]:
-            $source = "Web Site";
+            $source = "web_site";
             break;
     }
 
@@ -95,7 +93,7 @@ if((isset($_REQUEST['intent'])) &&
             break;
     }
 }
-elseif(isset($_REQUEST['page_url']) && ($_REQUEST['page_url'] == ""))
+elseif(isset($_REQUEST['page_url']) && ($_REQUEST['page_url'] == "http://unbouncepages.com/oau-2"))
 {   
     if (get_magic_quotes_gpc()) {
         $unescaped_REQUEST_data = stripslashes_deep($_REQUEST);
@@ -105,18 +103,19 @@ elseif(isset($_REQUEST['page_url']) && ($_REQUEST['page_url'] == ""))
       $form_data = json_decode($unescaped_REQUEST_data['data_json']);
       // If your form data has an 'Email Address' field, here's how you extract it:     
       $email_address = $form_data->email_address[0];
-      $name = $_REQUEST['first_name'];
-      $name .= " ".$_REQUEST['last_name'];
-      $phone = $_REQUEST['phone'];
-      $how = $_REQUEST['how'];
+      $name = $_REQUEST['first_nameText'];
+      $name .= " ".$_REQUEST['last_nameText'];
+      $phone = $_REQUEST['phone_numberText'];
+      $courseofintereset = $_REQUEST['which_course_are_you_interested_inText']; 
+      $how = $_REQUEST['how_did_you_hear_about_usText'];
       
       // Grab the remaining page data...                                                
-      $page_id = $_REQUEST['page_id'];
+      $page_id = $_REQUEST['page_uuidText'];
       $page_url = $_REQUEST['page_url'];
-      $variant = $_REQUEST['variant'];
+      $variant = $_REQUEST['variantText'];
       
       //set relevant details
-      $source = "website_registration";
+      $source = "web_site";
       $loginresult = $controller->login("tolu.ojo", "password", $source);
       $lr = json_decode($loginresult);
       $session_id = $lr->sessionid;      
@@ -127,9 +126,14 @@ elseif(isset($_REQUEST['page_url']) && ($_REQUEST['page_url'] == ""))
 else{
     echo json_encode(array(
         "status" => 0,
-        'message' => "Error: Invalid Application or Intent"
+        'message' => "Error: Invalid Application or Intent",
+        'intent' => $intent
     ));
 }
+
+
+
+
 
 function return_error(){
     echo json_encode(array(
