@@ -2,6 +2,7 @@
 
 require 'controller.php';
 require 'constants.php';
+require 'model.php';
 
 $controller = new controller();
 
@@ -120,7 +121,7 @@ elseif(isset($_REQUEST['page_url']) && ($_REQUEST['page_url'] == "http://unbounc
       $lr = json_decode($loginresult);
       $session_id = $lr->sessionid;      
       
-      $result = $controller->createAccount($session_id, $name, "", "", $phone, $email, $how, $source);
+      $result = $controller->createAccount($session_id, $name, "", "", $phone, $email_address, $how, $source);
       echo $result;
 }
 else{

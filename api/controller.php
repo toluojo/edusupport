@@ -5,8 +5,6 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-require 'model.php';
-require 'constants.php';
 
 class controller{
     function login($username, $password, $source){
@@ -201,7 +199,7 @@ class controller{
             "name_value_list" => array(
                 //to update a record, you will need to pass in a record id as commented below
                 array("name" => "id", "value" => $account_id),
-                array("name" => "account_type", "value" => "applicant")
+                array("name" => "account_type", "value" => APPLICANT)
             )
         );
 
@@ -256,8 +254,6 @@ class controller{
                 'email1',
                 'source_c',
                 'how_c',
-                'password_c'
-
             ),
 
             //If the search is to only search modules participating in the unified search.
