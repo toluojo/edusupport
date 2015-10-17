@@ -48,7 +48,23 @@ if((isset($intent)) && (in_array($intent, $intents)) &&
                 $how = $_REQUEST['how']?$_REQUEST['how']:"";
 
                 $result = $controller->createAccount($session_id, $name, $address, $location, $phone, $email, $how, $source);
-                echo $result;
+
+                if($result['status'] == 1){
+                    $update = $controller->updateLeadEmail($session_id, $phone, $email);
+
+                    if($update["status"] == 0){
+                        echo json_encode($update);
+                    }
+                    else{
+                        echo json_encode($result);
+                    }
+
+                    exit();
+                }
+                else{
+                    echo json_encode($result);
+                    exit();
+                }
             }else{
                 return_error();
             }

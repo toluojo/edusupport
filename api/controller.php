@@ -27,7 +27,7 @@ class controller{
                 'message' => "Login successful"
             ));
         }
-        else{            
+        else{
             return json_encode(array(
                 "status" => 0,
                 'message' => "Login unsuccessful"
@@ -35,14 +35,64 @@ class controller{
         }
     }
 
-    function createAccount($session_id, $name, $address, $location, $phone, $email, $how, $source){
-        $exists = $this->searchAccount($session_id, $email);
+    function updateLeadEmail($session_id, $account_id, $email)
+    {
+        $exists = $this->search($session_id, $account_id, LEADS);
 
-        if($exists){
-            return json_encode(array(
+        if ($exists["status"] == 0) {
+            return array(
+                "status" => 0,
+                'message' => "An error occurred during lead creation but the account has been created non the less"
+            );
+        } else {
+
+//            die(var_dump($exists));
+
+            //update lead -------------------------------------
+            $set_entry_parameters = array(
+
+                //session id
+                "session" => $session_id,
+
+                //The name of the module from which to retrieve records.
+                "module_name" => LEADS,
+
+                //Record attributes
+                "name_value_list" => array(
+                    //to update a record, you will need to pass in a record id as commented below
+                    array("name" => "id", "value" => $exists["data"]->entry_list[0]->records[0]->id->value),
+                    array("name" => "email1", "value" => $email)
+                )
+            );
+
+            $model = new Model(SET_ENTRY, $set_entry_parameters);
+            $set_entry_result = $model->call();
+
+//            die(var_dump($set_entry_result));
+
+            if (isset($set_entry_result->id)) {
+                return array(
+                    "status" => 1,
+                    'accountid' => $set_entry_result->id,
+                    'message' => "Lead successfully created"
+                );
+            } else {
+                return array(
+                    "status" => 0,
+                    'message' => "Lead Creation Unsuccessful"
+                );
+            }
+        }
+    }
+
+    function createAccount($session_id, $name, $address, $location, $phone, $email, $how, $source){
+        $exists = $this->search($session_id, $email, LEADS);
+
+        if($exists["status"] == 1){
+            return array(
                 "status" => 0,
                 'message' => "Account Already Exists"
-            ));
+            );
         }
         else {
             //create account -------------------------------------
@@ -73,16 +123,16 @@ class controller{
             $set_entry_result = $model->call();
 
             if (isset($set_entry_result->id)) {
-                return json_encode(array(
+                return array(
                     "status" => 1,
                     'accountid' => $set_entry_result->id,
                     'message' => "Lead successfully created"
-                ));
-            } else {                
-                return json_encode(array(
+                );
+            } else {
+                return array(
                     "status" => 0,
                     'message' => "Account Creation Unsuccessful"
-                ));
+                );
             }
         }
     }
@@ -220,7 +270,7 @@ class controller{
         }
     }
 
-    function searchAccount($session_id, $email){
+    function search($session_id, $email, $module){
         $search_by_module_parameters = array(
             //Session id
             "session" => $session_id,
@@ -230,7 +280,7 @@ class controller{
 
             //The list of modules to query.
             'modules' => array(
-                'Accounts',
+                $module
             ),
 
             //The record offset from which to start.
@@ -267,11 +317,18 @@ class controller{
         $model = new Model(SEARCH_BY_MODULE, $search_by_module_parameters);
         $search_by_module_result = $model->call();
 
+//        die(var_dump($search_by_module_result));
+
         if(empty($search_by_module_result->entry_list[0]->records)){
-            return false;
+            return array(
+                "status" => 0
+            );
         }
         else{
-            return true;
+            return array(
+                "status" => 1,
+                "data" => $search_by_module_result
+            );
         }
     }
 

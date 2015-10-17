@@ -13,4 +13,6 @@ define("GET_ENTRY_LIST", "get_entry_list");
 define('SEARCH_BY_MODULE', "search_by_module");
 define('LEAD', "Lead");
 define('APPLICANT', "Applicant");
+define('LEADS', "Leads");
+define('ACCOUNTS', "Accounts");
 define("URL", "http://localhost/vgg/suite/service/v4_1/rest.php");
