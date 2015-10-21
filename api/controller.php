@@ -35,9 +35,9 @@ class controller{
         }
     }
 
-    function updateLeadEmail($session_id, $account_id, $email)
+    function updateLeadEmail($session_id, $phone, $email)
     {
-        $exists = $this->search($session_id, $account_id, LEADS);
+        $exists = $this->search($session_id, $phone, LEADS);
 
         if ($exists["status"] == 0) {
             return array(
@@ -86,13 +86,17 @@ class controller{
     }
 
     function createAccount($session_id, $name, $address, $location, $phone, $email, $how, $source){
-        $exists = $this->search($session_id, $email, LEADS);
+        $exists = $this->search($session_id, $email, ACCOUNTS);
 
         if($exists["status"] == 1){
-            return array(
-                "status" => 0,
-                'message' => "Account Already Exists"
-            );
+            $exists = $this->search($session_id, $phone, ACCOUNTS);
+
+            if($exists["status"] == 1){
+                return array(
+                    "status" => 0,
+                    'message' => "Account Already Exists"
+                );
+            }
         }
         else {
             //create account -------------------------------------

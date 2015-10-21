@@ -141,7 +141,22 @@ elseif(isset($_REQUEST['page_url']))
     $session_id = $lr->sessionid;
 
     $result = $controller->createAccount($session_id, $name, "", "", $phone, $email, $how, $source);
-    echo $result;
+    if($result['status'] == 1){
+        $update = $controller->updateLeadEmail($session_id, $phone, $email);
+
+        if($update["status"] == 0){
+            echo json_encode($update);
+        }
+        else{
+            echo json_encode($result);
+        }
+
+        exit();
+    }
+    else{
+        echo json_encode($result);
+        exit();
+    }
 }
 else{
     echo json_encode(array(
