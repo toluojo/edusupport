@@ -46,11 +46,12 @@ if((isset($intent)) && (in_array($intent, $intents)) &&
                 $address = $_REQUEST['address']?$_REQUEST['address']:"";
                 $location = $_REQUEST['location']?$_REQUEST['location']:"";
                 $how = $_REQUEST['how']?$_REQUEST['how']:"";
+                $intended_course_of_study = $_REQUEST['intended_course_of_study']?$_REQUEST['intended_course_of_study']:"";
 
                 $result = $controller->createAccount($session_id, $name, $address, $location, $phone, $email, $how, $source);
 
                 if($result['status'] == 1){
-                    $update = $controller->updateLeadEmail($session_id, $phone, $email);
+                    $update = $controller->updateLeadEmail($session_id, $phone, $email, $intended_course_of_study);
 
                     if($update["status"] == 0){
                         echo json_encode($update);
@@ -142,7 +143,7 @@ elseif(isset($_REQUEST['page_url']))
 
     $result = $controller->createAccount($session_id, $name, "", "", $phone, $email, $how, $source);
     if($result['status'] == 1){
-        $update = $controller->updateLeadEmail($session_id, $phone, $email);
+        $update = $controller->updateLeadEmail($session_id, $phone, $email, "");
 
         if($update["status"] == 0){
             echo json_encode($update);

@@ -35,7 +35,7 @@ class controller{
         }
     }
 
-    function updateLeadEmail($session_id, $phone, $email)
+    function updateLeadEmail($session_id, $phone, $email, $course)
     {
         $exists = $this->search($session_id, $phone, LEADS);
 
@@ -61,7 +61,8 @@ class controller{
                 "name_value_list" => array(
                     //to update a record, you will need to pass in a record id as commented below
                     array("name" => "id", "value" => $exists["data"]->entry_list[0]->records[0]->id->value),
-                    array("name" => "email1", "value" => $email)
+                    array("name" => "email1", "value" => $email),
+                    array("name" => "intended_course_of_study_c", "value" => $course)
                 )
             );
 
@@ -92,10 +93,37 @@ class controller{
             $exists = $this->search($session_id, $phone, ACCOUNTS);
 
             if($exists["status"] == 1){
-                return array(
-                    "status" => 0,
-                    'message' => "Account Already Exists"
+//                return array(
+//                    "status" => 0,
+//                    'message' => "Account Already Exists"
+//                );
+
+                //update account -------------------------------------
+                $set_entry_parameters = array(
+
+                    //session id
+                    "session" => $session_id,
+
+                    //The name of the module from which to retrieve records.
+                    "module_name" => "Accounts",
+
+                    //Record attributes
+                    "name_value_list" => array(
+                        //to update a record, you will need to pass in a record id as commented below
+                        array("name" => "id", "value" => $exists["data"]->entry_list[0]->records[0]->id->value),
+                        array("name" => "name", "value" => $name),
+                        array("name" => "jjwg_maps_address_c", "value" => $address),
+                        array("name" => "billing_address_state", "value" => $location),
+                        array("name" => "phone_office", "value" => $phone),
+                        array("name" => "email1", "value" => $email),
+                        array("name" => "source_c", "value" => $source),
+                        array("name" => "how_c", "value" => $how),
+                        array("name" => "account_type", "value" => LEAD),
+                    )
                 );
+
+                $model = new Model(SET_ENTRY, $set_entry_parameters);
+                $set_entry_result = $model->call();
             }
         }
         else {
@@ -125,6 +153,7 @@ class controller{
 
             $model = new Model(SET_ENTRY, $set_entry_parameters);
             $set_entry_result = $model->call();
+        }
 
             if (isset($set_entry_result->id)) {
                 return array(
@@ -138,7 +167,6 @@ class controller{
                     'message' => "Account Creation Unsuccessful"
                 );
             }
-        }
     }
 
     function fetchAllAccounts($session_id){
