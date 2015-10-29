@@ -35,7 +35,7 @@ class controller{
         }
     }
 
-    function updateLeadEmail($session_id, $phone, $email, $course)
+    function updateLead($session_id, $phone, $email, $course, $referral)
     {
         $exists = $this->search($session_id, $phone, LEADS);
 
@@ -62,7 +62,8 @@ class controller{
                     //to update a record, you will need to pass in a record id as commented below
                     array("name" => "id", "value" => $exists["data"]->entry_list[0]->records[0]->id->value),
                     array("name" => "email1", "value" => $email),
-                    array("name" => "intended_course_of_study_c", "value" => $course)
+                    array("name" => "intended_course_of_study_c", "value" => $course),
+                    array("name" => "refered_by", "value" => $referral)
                 )
             );
 
