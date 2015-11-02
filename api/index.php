@@ -46,11 +46,13 @@ if((isset($intent)) && (in_array($intent, $intents)) &&
                 $address = $_REQUEST['address']?$_REQUEST['address']:"";
                 $location = $_REQUEST['location']?$_REQUEST['location']:"";
                 $how = $_REQUEST['how']?$_REQUEST['how']:"";
+                $intended_course_of_study = $_REQUEST['intended_course_of_study']?$_REQUEST['intended_course_of_study']:"";
+                $referral = $_REQUEST['referral']?$_REQUEST['referral']:"";
 
                 $result = $controller->createAccount($session_id, $name, $address, $location, $phone, $email, $how, $source);
 
                 if($result['status'] == 1){
-                    $update = $controller->updateLeadEmail($session_id, $phone, $email);
+                    $update = $controller->updateLead($session_id, $phone, $email, $intended_course_of_study, $referral);
 
                     if($update["status"] == 0){
                         echo json_encode($update);
@@ -110,35 +112,53 @@ if((isset($intent)) && (in_array($intent, $intents)) &&
             break;
     }
 }
-elseif(isset($_REQUEST['page_url']) && ($_REQUEST['page_url'] == "http://unbouncepages.com/oau-2"))
-{   
+elseif(isset($_REQUEST['page_url']))
+{
+    file_put_contents("log.txt", time().print_r($_REQUEST, true));
+
     if (get_magic_quotes_gpc()) {
         $unescaped_REQUEST_data = stripslashes_deep($_REQUEST);
-      } else {
+    } else {
         $unescaped_REQUEST_data = $_REQUEST;
-      }
-      $form_data = json_decode($unescaped_REQUEST_data['data_json']);
-      // If your form data has an 'Email Address' field, here's how you extract it:     
-      $email_address = $form_data->email_address[0];
-      $name = $_REQUEST['first_nameText'];
-      $name .= " ".$_REQUEST['last_nameText'];
-      $phone = $_REQUEST['phone_numberText'];
-      $courseofintereset = $_REQUEST['which_course_are_you_interested_inText']; 
-      $how = $_REQUEST['how_did_you_hear_about_usText'];
-      
-      // Grab the remaining page data...                                                
-      $page_id = $_REQUEST['page_uuidText'];
-      $page_url = $_REQUEST['page_url'];
-      $variant = $_REQUEST['variantText'];
-      
-      //set relevant details
-      $source = "web_site";
-      $loginresult = $controller->login("tolu.ojo", "password", $source);
-      $lr = json_decode($loginresult);
-      $session_id = $lr->sessionid;      
-      
-      $result = $controller->createAccount($session_id, $name, "", "", $phone, $email_address, $how, $source);
-      echo $result;
+    }
+    $form_data = json_decode($unescaped_REQUEST_data['data_json']);
+    // If your form data has an 'Email Address' field, here's how you extract it:
+    $email = $form_data->email_address[0];
+    $name = $form_data->first_name[0];
+    $name .= " ".$form_data->last_name[0];
+    $phone = $form_data->phone_number[0];
+    // $courseofintereset = $_REQUEST['which_course_are_you_interested_inText'];
+    $how = $form_data->how_did_you_hear_about_us[0];
+
+    // Grab the remaining page data...
+    $page_id = $_REQUEST['page_uuidText'];
+    $page_url = $_REQUEST['page_url'];
+    $variant = $_REQUEST['variantText'];
+
+    //set relevant details
+    $source = "web_site";
+    $loginresult = $controller->login("tolu.ojo", "password", $source);
+    $lr = json_decode($loginresult);
+
+    $session_id = $lr->sessionid;
+
+    $result = $controller->createAccount($session_id, $name, "", "", $phone, $email, $how, $source);
+    if($result['status'] == 1){
+        $update = $controller->updateLead($session_id, $phone, $email, "", "");
+
+        if($update["status"] == 0){
+            echo json_encode($update);
+        }
+        else{
+            echo json_encode($result);
+        }
+
+        exit();
+    }
+    else{
+        echo json_encode($result);
+        exit();
+    }
 }
 else{
     echo json_encode(array(
