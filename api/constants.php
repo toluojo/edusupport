@@ -15,4 +15,4 @@ define('LEAD', "Lead");
 define('APPLICANT', "Applicant");
 define('LEADS', "Leads");
 define('ACCOUNTS', "Accounts");
-define("URL", "http://localhost/vgg/suite/service/v4_1/rest.php");
+define("URL", "http://localhost:3152/service/v4_1/rest.php");
