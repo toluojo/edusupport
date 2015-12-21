@@ -15,7 +15,7 @@ $source = isset($_REQUEST['application_name'])?strtolower($_REQUEST['application
 
 if((isset($intent)) && (in_array($intent, $intents)) &&
     (isset($source) && (in_array($source, $apps))))
-{     
+{
     switch($source){
         case $apps[0]:
             $source = "apply_portal";
@@ -118,14 +118,9 @@ elseif(isset($_REQUEST['page_url']))
     $session_id = $lr->sessionid;
 
     $result = $controller->createLead($session_id, $name, "", "", $phone, $email, $how, $source, "", "");
-    if($result['status'] == 1){
-        echo json_encode($result);
-        exit();
-    }
-    else{
-        echo json_encode($result);
-        exit();
-    }
+    echo json_encode($result);
+    exit();
+
 }
 else{
     echo json_encode(array(
@@ -149,7 +144,7 @@ function return_error(){
 
 function stripslashes_deep($value) {
     $value = is_array($value) ?
-    array_map('stripslashes_deep', $value) :
-    stripslashes($value);
+        array_map('stripslashes_deep', $value) :
+        stripslashes($value);
     return $value;
 }
