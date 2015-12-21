@@ -35,6 +35,95 @@ class controller{
         }
     }
 
+    function createLead($session_id, $name, $address, $location, $phone, $email, $how, $source, $course, $referral){
+        $exists = $this->search($session_id, $email, LEADS);
+
+        if($exists["status"] == 1){
+//            $exists = $this->search($session_id, $phone, ACCOUNTS);
+//
+//            if($exists["status"] == 1){
+////                return array(
+//                    "status" => 0,
+//                    'message' => "Account Already Exists"
+//                );
+
+            //update account -------------------------------------
+            $set_entry_parameters = array(
+
+                //session id
+                "session" => $session_id,
+
+                //The name of the module from which to retrieve records.
+                "module_name" => "Leads",
+
+                //Record attributes
+                "name_value_list" => array(
+                    //to update a record, you will need to pass in a record id as commented below
+                    array("name" => "id", "value" => $exists["data"]->entry_list[0]->records[0]->id->value),
+                    array("name" => "last_name", "value" => $name),
+                    array("name" => "primary_address_street", "value" => $address),
+                    array("name" => "primary_address_state", "value" => $location),
+                    array("name" => "phone_mobile", "value" => $phone),
+                    array("name" => "email1", "value" => $email),
+                    array("name" => "lead_source", "value" => $source),
+                    array("name" => "lead_source_description", "value" => $how),
+                    array("name" => "intended_course_of_study_c", "value" => $course),
+                    array("name" => "refered_by", "value" => $referral),
+                    array("name" => "account_name", "value" => $name),
+                    array("name" => "sales_stage_c", "value" => "initial_contact")
+                )
+            );
+
+            $model = new Model(SET_ENTRY, $set_entry_parameters);
+            $set_entry_result = $model->call();
+//            }
+        }
+        else {
+            //create account -------------------------------------
+            $set_entry_parameters = array(
+
+                //session id
+                "session" => $session_id,
+
+                //The name of the module from which to retrieve records.
+                "module_name" => "Leads",
+
+                //Record attributes
+                "name_value_list" => array(
+                    // to update a record, you will need to pass in a record id as commented below
+                    // array("name" => "id", "value" => "eb220d1d-8684-82f1-4d94-55e597c27a1c"),
+                    array("name" => "last_name", "value" => $name),
+                    array("name" => "primary_address_street", "value" => $address),
+                    array("name" => "primary_address_state", "value" => $location),
+                    array("name" => "phone_mobile", "value" => $phone),
+                    array("name" => "email1", "value" => $email),
+                    array("name" => "lead_source", "value" => $source),
+                    array("name" => "lead_source_description", "value" => $how),
+                    array("name" => "intended_course_of_study_c", "value" => $course),
+                    array("name" => "refered_by", "value" => $referral),
+                    array("name" => "account_name", "value" => $name),
+                    array("name" => "sales_stage_c", "value" => "initial_contact")
+                )
+            );
+
+            $model = new Model(SET_ENTRY, $set_entry_parameters);
+            $set_entry_result = $model->call();
+        }
+
+        if (isset($set_entry_result->id)) {
+            return array(
+                "status" => 1,
+                'accountid' => $set_entry_result->id,
+                'message' => "Lead successfully created"
+            );
+        } else {
+            return array(
+                "status" => 0,
+                'message' => "Lead creation unsuccessful"
+            );
+        }
+    }
+
     function updateLead($session_id, $phone, $email, $course, $referral)
     {
         $exists = $this->search($session_id, $phone, LEADS);
@@ -84,6 +173,41 @@ class controller{
                     'message' => "Lead Creation Unsuccessful"
                 );
             }
+        }
+    }
+
+    function upgradeLead($session_id, $account_id){
+        //update account -------------------------------------
+        $set_entry_parameters = array(
+
+            //session id
+            "session" => $session_id,
+
+            //The name of the module from which to retrieve records.
+            "module_name" => "Leads",
+
+            //Record attributes
+            "name_value_list" => array(
+                //to update a record, you will need to pass in a record id as commented below
+                array("name" => "id", "value" => $account_id),
+                array("name" => "sales_stage_c", "value" => "Closed Won")
+            )
+        );
+
+        $model = new Model(SET_ENTRY, $set_entry_parameters);
+        $set_entry_result = $model->call();
+
+        if(isset($set_entry_result->id)){
+            return json_encode(array(
+                "status" => 1,
+                'message' => "Lead changed to customer"
+            ));
+        }
+        else{
+            return json_encode(array(
+                "status" => 0,
+                'message' => "Account Upgrade Unsuccessful"
+            ));
         }
     }
 

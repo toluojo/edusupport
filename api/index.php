@@ -49,24 +49,9 @@ if((isset($intent)) && (in_array($intent, $intents)) &&
                 $intended_course_of_study = $_REQUEST['intended_course_of_study']?$_REQUEST['intended_course_of_study']:"";
                 $referral = $_REQUEST['referral']?$_REQUEST['referral']:"";
 
-                $result = $controller->createAccount($session_id, $name, $address, $location, $phone, $email, $how, $source);
-
-                if($result['status'] == 1){
-                    $update = $controller->updateLead($session_id, $phone, $email, $intended_course_of_study, $referral);
-
-                    if($update["status"] == 0){
-                        echo json_encode($update);
-                    }
-                    else{
-                        echo json_encode($result);
-                    }
-
-                    exit();
-                }
-                else{
-                    echo json_encode($result);
-                    exit();
-                }
+                $result = $controller->createLead($session_id, $name, $address, $location, $phone, $email, $how, $source, $intended_course_of_study, $referral);
+                echo json_encode($result);
+                exit();
             }else{
                 return_error();
             }
@@ -77,7 +62,7 @@ if((isset($intent)) && (in_array($intent, $intents)) &&
                 $account_id = $_REQUEST['accountid'];
                 $upgrade = $_REQUEST['upgrade'];
                 if(in_array($upgrade, $upgrades)) {
-                    $result = $controller->upgradeAccount($session_id, $account_id);
+                    $result = $controller->upgradeLead($session_id, $account_id);
                     echo $result;
                 }
                 else{
@@ -87,16 +72,6 @@ if((isset($intent)) && (in_array($intent, $intents)) &&
                 return_error();
             }
             break;
-//        case "revive_accounts":
-//            if(isset($_REQUEST['sessionid'])){
-//                $session_id = $_REQUEST['sessionid'];
-//
-//                $result = $controller->reviveAllAccounts($session_id);
-//                echo $result;
-//            }else{
-//                return_error();
-//            }
-//            break;
         case "logout":
             if(isset($_REQUEST['sessionid'])){
                 $session_id = $_REQUEST['sessionid'];
