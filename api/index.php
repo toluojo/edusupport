@@ -117,17 +117,9 @@ elseif(isset($_REQUEST['page_url']))
 
     $session_id = $lr->sessionid;
 
-    $result = $controller->createAccount($session_id, $name, "", "", $phone, $email, $how, $source);
+    $result = $controller->createLead($session_id, $name, "", "", $phone, $email, $how, $source, "", "");
     if($result['status'] == 1){
-        $update = $controller->updateLead($session_id, $phone, $email, "", "");
-
-        if($update["status"] == 0){
-            echo json_encode($update);
-        }
-        else{
-            echo json_encode($result);
-        }
-
+        echo json_encode($result);
         exit();
     }
     else{
