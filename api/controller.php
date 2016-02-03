@@ -35,7 +35,7 @@ class controller{
         }
     }
 
-    function createLead($session_id, $name, $address, $location, $phone, $email, $how, $source, $course, $referral){
+    function createLead($session_id, $first_name, $last_name, $address, $location, $phone, $email, $how, $source, $course, $referral){
         $exists = $this->search($session_id, $email, LEADS);
 
         if($exists["status"] == 1){
@@ -47,7 +47,7 @@ class controller{
 //                    'message' => "Account Already Exists"
 //                );
 
-            //update account -------------------------------------
+            //update lead -------------------------------------
             $set_entry_parameters = array(
 
                 //session id
@@ -60,7 +60,8 @@ class controller{
                 "name_value_list" => array(
                     //to update a record, you will need to pass in a record id as commented below
                     array("name" => "id", "value" => $exists["data"]->entry_list[0]->records[0]->id->value),
-                    array("name" => "last_name", "value" => $name),
+                    array("name" => "first_name", "value" => $first_name),
+                    array("name" => "last_name", "value" => $last_name),
                     array("name" => "primary_address_street", "value" => $address),
                     array("name" => "primary_address_state", "value" => $location),
                     array("name" => "phone_mobile", "value" => $phone),
@@ -69,7 +70,7 @@ class controller{
                     array("name" => "lead_source_description", "value" => $how),
                     array("name" => "intended_course_of_study_c", "value" => $course),
                     array("name" => "refered_by", "value" => $referral),
-                    array("name" => "account_name", "value" => $name),
+                    array("name" => "account_name", "value" => ($last_name . " " . $first_name)),
                     array("name" => "sales_stage_c", "value" => "initial_contact")
                 )
             );
@@ -79,7 +80,7 @@ class controller{
 //            }
         }
         else {
-            //create account -------------------------------------
+            //create lead -------------------------------------
             $set_entry_parameters = array(
 
                 //session id
@@ -92,7 +93,8 @@ class controller{
                 "name_value_list" => array(
                     // to update a record, you will need to pass in a record id as commented below
                     // array("name" => "id", "value" => "eb220d1d-8684-82f1-4d94-55e597c27a1c"),
-                    array("name" => "last_name", "value" => $name),
+                    array("name" => "first_name", "value" => $first_name),
+                    array("name" => "last_name", "value" => $last_name),
                     array("name" => "primary_address_street", "value" => $address),
                     array("name" => "primary_address_state", "value" => $location),
                     array("name" => "phone_mobile", "value" => $phone),
@@ -101,7 +103,7 @@ class controller{
                     array("name" => "lead_source_description", "value" => $how),
                     array("name" => "intended_course_of_study_c", "value" => $course),
                     array("name" => "refered_by", "value" => $referral),
-                    array("name" => "account_name", "value" => $name),
+                    array("name" => "account_name", "value" => $last_name . " " . $first_name),
                     array("name" => "sales_stage_c", "value" => "initial_contact")
                 )
             );

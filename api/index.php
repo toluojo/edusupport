@@ -41,6 +41,8 @@ if((isset($intent)) && (in_array($intent, $intents)) &&
             if(isset($_REQUEST['sessionid']) && isset($_REQUEST['email'])){
                 $session_id = $_REQUEST['sessionid'];
                 $email = $_REQUEST['email'];
+                $first_name = $_REQUEST['first_name']?$_REQUEST['first_name']:"";
+                $last_name = $_REQUEST['last_name']?$_REQUEST['last_name']:"";
                 $name = $_REQUEST['name']?$_REQUEST['name']:"";
                 $phone = $_REQUEST['phone']?$_REQUEST['phone']:"";
                 $address = $_REQUEST['address']?$_REQUEST['address']:"";
@@ -49,7 +51,7 @@ if((isset($intent)) && (in_array($intent, $intents)) &&
                 $intended_course_of_study = $_REQUEST['intended_course_of_study']?$_REQUEST['intended_course_of_study']:"";
                 $referral = $_REQUEST['referral']?$_REQUEST['referral']:"";
 
-                $result = $controller->createLead($session_id, $name, $address, $location, $phone, $email, $how, $source, $intended_course_of_study, $referral);
+                $result = $controller->createLead($session_id, $first_name, $last_name, $address, $location, $phone, $email, $how, $source, $intended_course_of_study, $referral);
                 echo json_encode($result);
                 exit();
             }else{
