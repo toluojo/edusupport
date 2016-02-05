@@ -42,8 +42,8 @@ if((isset($intent)) && (in_array($intent, $intents)) &&
                 $session_id = $_REQUEST['sessionid'];
                 $email = $_REQUEST['email'];
                 $first_name = $_REQUEST['first_name']?$_REQUEST['first_name']:"";
-                $last_name = $_REQUEST['last_name']?$_REQUEST['last_name']:"";
-                $name = $_REQUEST['name']?$_REQUEST['name']:"";
+                $last_name = $_REQUEST['last_name']?$_REQUEST['last_name']:$_REQUEST['name'];
+//                $name = $_REQUEST['name']?$_REQUEST['name']:"";
                 $phone = $_REQUEST['phone']?$_REQUEST['phone']:"";
                 $address = $_REQUEST['address']?$_REQUEST['address']:"";
                 $location = $_REQUEST['location']?$_REQUEST['location']:"";
