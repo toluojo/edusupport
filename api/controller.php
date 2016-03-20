@@ -178,7 +178,7 @@ class controller{
         }
     }
 
-    function upgradeLead($session_id, $account_id){
+    function upgradeLead($session_id, $account_id, $course_chosen){
         $date = new DateTime();
 //        die(var_dump($date->format('Y-m-d H:i:s')));
         //update account -------------------------------------
@@ -194,7 +194,8 @@ class controller{
                 //to update a record, you will need to pass in a record id as commented below
                 array("name" => "id", "value" => $account_id),
                 array("name" => "sales_stage_c", "value" => "Closed Won"),
-                array("name" => "date_paid_c", "value" => $date->format('Y-m-d H:i:s'))
+                array("name" => "date_paid_c", "value" => $date->format('Y-m-d H:i:s')),
+                array("name" => "course_chosen_c", "value" => $$course_chosen)
             )
         );
 
