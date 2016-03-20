@@ -62,7 +62,7 @@ if((isset($intent)) && (in_array($intent, $intents)) &&
             if(isset($_REQUEST['sessionid']) && isset($_REQUEST['accountid']) && isset($_REQUEST['upgrade']) &&isset($_REQUEST['course_chosen'])){
                 $session_id = $_REQUEST['sessionid'];
                 $account_id = $_REQUEST['accountid'];
-                $course_chosen = && $_REQUEST['course_chosen'];
+                $course_chosen = $_REQUEST['course_chosen'];
                 $upgrade = $_REQUEST['upgrade'];
                 if(in_array($upgrade, $upgrades)) {
                     $result = $controller->upgradeLead($session_id, $account_id, $course_chosen);
