@@ -195,7 +195,7 @@ class controller{
                 array("name" => "id", "value" => $account_id),
                 array("name" => "sales_stage_c", "value" => "Closed Won"),
                 array("name" => "date_paid_c", "value" => $date->format('Y-m-d H:i:s')),
-                array("name" => "course_chosen_c", "value" => $$course_chosen)
+                array("name" => "course_chosen_c", "value" => $course_chosen)
             )
         );
 
