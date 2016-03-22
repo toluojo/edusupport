@@ -59,10 +59,10 @@ if((isset($intent)) && (in_array($intent, $intents)) &&
             }
             break;
         case "upgrade_account":
-            if(isset($_REQUEST['sessionid']) && isset($_REQUEST['accountid']) && isset($_REQUEST['upgrade']) &&isset($_REQUEST['course_chosen'])){
+            if(isset($_REQUEST['sessionid']) && isset($_REQUEST['accountid']) && isset($_REQUEST['upgrade'])){
                 $session_id = $_REQUEST['sessionid'];
                 $account_id = $_REQUEST['accountid'];
-                $course_chosen = $_REQUEST['course_chosen'];
+                $course_chosen = (isset($_REQUEST['course_chosen']))?$_REQUEST['course_chosen']:"";
                 $upgrade = $_REQUEST['upgrade'];
                 if(in_array($upgrade, $upgrades)) {
                     $result = $controller->upgradeLead($session_id, $account_id, $course_chosen);
